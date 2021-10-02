@@ -1,0 +1,91 @@
+B30 NIkhil parmar
+
+Q1 A: hdfs dfs -appendToFile /home/administrator/localDemo.txt /exam/demo.txt
+ 
+
+output: 
+hdfs dfs -cat /exam/demo.txt
+
+hellow there this is the data of local file that 
+will be appended to the hdfs file
+
+Q1 B:
+
+hdfs dfs -stat /exam
+
+output:
+
+2021-09-22 12:15:20
+
+Q2:
+
+Mapper.py
+
+# Write a mapreduce job using hadoop streaming in python that will display theOrganization
+# Group Code and Organization Group of the department havingminimum Total Benefits. 
+# (Use Employee-Compensation.csv
+
+import sys
+import csv
+cols = 'Organization Group Code,Job Family Code,Job Code,Year Type,Year,Organization Group,Department Code,Department,Union Code,Union,Job Family,Job,Employee Identifier,Salaries,Overtime,Other Salaries,Total Salary,Retirement,Health and Dental,Other Benefits,Total Benefits,TotalCompensation'.split(",")
+for a in sys.stdin:
+	row = dict(zip(cols,[b.strip() for b in next(csv.reader([a]))]))
+	if(row["Total Benefits"] == min(row["Total Benefits"])):
+		print("Group code : " + row["Organization Group Code"] + " Organization Group : " + 
+			row["Organization Group"] + " have the minimum TOtal Benifits")
+
+commad: -cat /outputQ2/part-00000
+
+output:
+
+
+Group code : 3102 Organization Group : Public Protection have the minimum TOtal Benifits
+
+
+
+Q3:
+
+Mapper.py
+
+# Write a mapreduce job using hadoop streaming in python that will display the count of 
+# the departments where Job Family is Management and Salaries are greater
+# than 100000.00. (Use Employee-Compensation.csv)
+import sys
+import csv
+cols = 'Organization Group Code,Job Family Code,Job Code,Year Type,Year,Organization Group,Department Code,Department,Union Code,Union,Job Family,Job,Employee Identifier,Salaries,Overtime,Other Salaries,Total Salary,Retirement,Health and Dental,Other Benefits,Total Benefits,TotalCompensation'.split(",")
+for a in sys.stdin:
+	row = dict(zip(cols,[b.strip() for b in next(csv.reader([a]))]))
+	if(row["Job Family"] == "Management" and float(row["Salaries"])>100000.00):
+		print(row["Job Family"] + ":" + row["Salaries"])
+	
+Reducer.py
+
+import sys
+import math
+
+totalCount = 0
+
+for line in sys.stdin:
+    line = line.strip()
+    data = line.split(':')
+    # print(data)
+    for i in data:
+    	totalCount += 1
+print(totalCount)
+
+command :
+hadoop fs -cat /outQ3/part-00000
+
+
+output:
+130
+
+
+
+
+
+
+
+
+
+
