@@ -1,24 +1,22 @@
 import React from 'react';
-
+import { Redirect } from 'react-router-dom';
 class LoginForm extends React.Component {
   state = {
     username: '',
     password: '',
     logged_in: localStorage.getItem('token') ? true : false,
-    
   };
   
   componentDidMount() {
-      
     if (this.state.logged_in) {
-      fetch('http://localhost:8000/login/current_user/', {
+      fetch('http://localhost:8000/auth/current_user/', {
         headers: {
           Authorization: `JWT ${localStorage.getItem('token')}`
         }
       })
         .then(res => res.json())
         .then(json => {
-          this.setState({ username: json.username },()=>console.log(this.state.username));
+          this.setState({ username: json.username},()=>{console.log(this.state.username)});
         });   
     }
   }
@@ -33,11 +31,12 @@ class LoginForm extends React.Component {
       body: JSON.stringify(data)
     }).then(res => res.json())
       .then(json => {
-        localStorage.setItem('token', json.token);
-        this.setState({
-          logged_in: true,
-          displayed_form: '',
-          username: json.user.username
+        localStorage.setItem('token', json.token,()=>{
+          this.setState({
+            logged_in: true,
+            displayed_form: '',
+            username: json.user.username,
+          })
         })
       });
   };
@@ -53,9 +52,11 @@ class LoginForm extends React.Component {
   };
 
   render() {
+    if(this.state.logged_in===true){
+      return (<Redirect to="/files" />);
+    }
     return (
-      <form onSubmit={e => this.handle_login(e, this.state)}>
-        
+        <div>
         <br></br>
         {"hellow " + this.state.username}
         
@@ -66,6 +67,7 @@ class LoginForm extends React.Component {
           name="username"
           value={this.state.username}
           onChange={this.handle_change}
+          required
         />
         <label htmlFor="password">Password</label>
         <input
@@ -73,9 +75,13 @@ class LoginForm extends React.Component {
           name="password"
           value={this.state.password}
           onChange={this.handle_change}
+          required
         />
-        <input type="submit" />
-      </form>
+
+        <input type="button" onClick={e => this.handle_login(e, this.state)} value="submit"/>    
+       
+        </div>
+
       
     );
   }
