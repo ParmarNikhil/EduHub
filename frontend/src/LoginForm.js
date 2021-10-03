@@ -1,10 +1,11 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import {useHistory, Redirect, Link } from 'react-router-dom';
 class LoginForm extends React.Component {
   state = {
     username: '',
     password: '',
     logged_in: localStorage.getItem('token') ? true : false,
+    redirect: "false",
   };
   
   componentDidMount() {
@@ -21,8 +22,8 @@ class LoginForm extends React.Component {
     }
   }
 
-  handle_login = (e, data) => {
-    e.preventDefault();
+  handle_login = (data) => {
+    // e.preventDefault();
     fetch('http://localhost:8000/token-auth/', {
       method: 'POST',
       headers: {
@@ -30,16 +31,17 @@ class LoginForm extends React.Component {
       },
       body: JSON.stringify(data)
     }).then(res => res.json())
-      .then(json => {
-        localStorage.setItem('token', json.token,()=>{
+      .then(json => localStorage.setItem('token', json.token)   
+      );
+      
           this.setState({
             logged_in: true,
-            displayed_form: '',
-            username: json.user.username,
+            redirect: "true",
+          },()=>{
+            console.log(this.state.redirect)            
           })
-        })
-      });
   };
+
 
   handle_change = e => {
     const name = e.target.name;
@@ -52,38 +54,40 @@ class LoginForm extends React.Component {
   };
 
   render() {
-    if(this.state.logged_in===true){
+    if(this.state.logged_in===true || this.state.redirect==="true"){
       return (<Redirect to="/files" />);
     }
-    return (
-        <div>
-        <br></br>
-        {"hellow " + this.state.username}
-        
-        <h4>Log In</h4>
-        <label htmlFor="username">Username</label>
+    else{
+      return (
+       
+        <form className="login-box" onSubmit = {() => this.handle_login(this.state)}>
+        <h1>login</h1>
         <input
           type="text"
           name="username"
+          placeholder="username"
           value={this.state.username}
           onChange={this.handle_change}
           required
         />
-        <label htmlFor="password">Password</label>
         <input
           type="password"
           name="password"
+          placeholder="password"
           value={this.state.password}
           onChange={this.handle_change}
           required
         />
 
-        <input type="button" onClick={e => this.handle_login(e, this.state)} value="submit"/>    
+        {/* <button className="submit-btn" id="submit-btn"> submit </button>     */}
        
-        </div>
-
-      
+        <input type="submit" value="submit" className="submit-btn"/>
+        
+        </form>
     );
+    }
+    
+    
   }
 }
 

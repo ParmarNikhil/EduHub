@@ -9,6 +9,7 @@ class FetchData extends Component {
   }
 
   componentDidMount(){
+    if(localStorage.getItem('token')){
     fetch("http://127.0.0.1:8000/api/fetch", {
         headers: {
           Authorization: `JWT ${localStorage.getItem('token')}`
@@ -18,6 +19,7 @@ class FetchData extends Component {
         .then(data => this.setState({files:data},()=>{
           console.log(this.state.files)
         }))                 
+      }
   }
 
   openFile(id, filename) {
@@ -41,12 +43,16 @@ class FetchData extends Component {
   }
 
   handleSubmit = (event) => {
+        event.preventDefault()
         let data = event.target;
         console.log("form dataa",data)
         const formdata = new FormData(data);
-        fetch("http://127.0.0.1:8000/api/upload", {
+        fetch("http://127.0.0.1:8000/api/upload", { 
           method:"POST",
           body:formdata,
+          headers: {
+            Authorization: `JWT ${localStorage.getItem('token')}`
+          }
         })
         .catch(function(error){
           console.log(error);
@@ -65,7 +71,7 @@ class FetchData extends Component {
               <input type="file" accept=".pdf, .pptx, .txt, .zip" name="file" id="file"/>
               <input type="submit" className="submit" value="submit"/>
               <Link to="/">
-              <input type="button" value="logout" onClick={()=>localStorage.removeItem("token")}/>
+              <input type="button" className="logout-btn" value="logout" onClick={()=>localStorage.removeItem("token")}/>
               </Link>
           </form>
           
