@@ -1,6 +1,11 @@
 .App {
   text-align: center;
+}
 
+body{
+  background: url("./bg.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 800px;
 }
 
 .login-box{
@@ -23,23 +28,56 @@ input{
 
 .logout-btn{
   float: right;
+  border: transparent;
+  font-size: 3ex;
+  color: white;
 }
 
 ul{
   list-style-type: none;
   margin-top: 50px;
+  
 }
 ul li{
-  margin-bottom: 16px;
+  display:list-item;
+  margin-bottom: 22px;
   height: 50px;
   justify-content: center;
-  border: 8px solid white;
-  background-color: white
+  /* border-style:ridge; */
+  box-shadow: 1px 1px 1px 1px black;
 }
 
-body{
-  background-color:peachpuff;
+ul li:hover{
+  box-shadow: 2px 2px 2px 2px black;
 }
+
+ul li button:hover{
+  box-shadow: 0px 0px 1px 1px whitesmoke;
+}
+
+ul li a{
+  color: black;
+  font-size:medium;
+  color:silver;
+  float:left;
+  margin-left: 12px;
+}
+
+ul li button{
+  float: right;
+  margin-top: 15px;
+  margin-right: 12px;
+  
+  font-size:medium;
+  color:silver;
+  
+}
+
+button{
+  background-color: transparent;
+  border: transparent;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -60,30 +98,6 @@ body{
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-a{
+/* a{
   margin-right: 16px;
-}
+} */

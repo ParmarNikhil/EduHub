@@ -1,7 +1,6 @@
 import './App.css';
 import { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
-// import reactDom from 'react-dom';
 import LoginForm from './LoginForm';
 import FetchData from './FetchData';
 class App extends Component {
