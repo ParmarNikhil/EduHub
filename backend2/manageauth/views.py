@@ -17,3 +17,9 @@ def current_user(request):
     """
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def userlist(request):
+    obj = User.objects.all()
+    serializer = UserSerializer(obj,many=True)
+    return Response(serializer.data)

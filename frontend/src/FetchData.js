@@ -5,12 +5,13 @@ import { Link, Redirect } from "react-router-dom";
 class FetchData extends Component {
     state = {
         files: [],
-        logged_in: true,
+        logged_in: false,
+        
       }
       
   componentDidMount() {
-      setTimeout( () => {
-        if (localStorage.getItem("token") !== "") {
+
+        if (localStorage.getItem("token")) {
           fetch("http://127.0.0.1:8000/api/fetch", {
             headers: {
                 Authorization: `JWT ${localStorage.getItem("token")}`
@@ -18,13 +19,14 @@ class FetchData extends Component {
             })
             .then(response => response.json())
               .then(data => this.setState({ files: data, logged_in:true }))
-        }
-        else {
-          console.log("Helllowoowowo")
-          this.setState({logged_in: false})
-        }
-    },800)
-  }
+       
+            }
+            else {
+              console.log("Helllowoowowo")
+              this.setState({logged_in: false})
+            }
+
+}
 
   openFile(id, filename) {
     fetch(`http://127.0.0.1:8000/api/open/${id}/`, {
@@ -63,11 +65,13 @@ class FetchData extends Component {
   }
 
   render() {
+  
     return <>
-      {!this.state.logged_in ?
-        <Redirect to="/" /> :
+     {!localStorage.getItem("token") ? <Redirect to="/" /> : 
         <div style={{ textAlign: 'center', margin: 50 }}>
-
+        {localStorage.getItem("isSuperUser")==="true" ? "superuser" : null}
+        <br></br>
+        {localStorage.getItem("isStaff")==="true"? "staff" : null}
           <form encType="multi-part/formdata" onSubmit={this.handleSubmit}>
             <input type="text" name="title" id="title" />
             <input type="file" accept=".pdf, .pptx, .txt, .zip" name="file" id="file" />
@@ -88,8 +92,7 @@ class FetchData extends Component {
             ))}
           </ul>
         </div>
-
-      }
+            }
     </>
   }
 

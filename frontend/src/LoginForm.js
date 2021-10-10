@@ -8,22 +8,30 @@ class LoginForm extends React.Component {
     logged_in: false,
   };
 
-  async componentDidMount() {  
-    if (localStorage.getItem("token")) {
-      await fetch('http://localhost:8000/auth/current_user/', {
+   componentDidMount() {  
+   setTimeout( 
+    ()=>{if (localStorage.getItem("token")) {
+       fetch('http://localhost:8000/auth/current_user/', {
         headers: {
           Authorization: `JWT ${localStorage.getItem("token")}`
         }
       })
         .then(res => res.json())
         .then(json => {
+          localStorage.setItem("isSuperUser",json.is_superuser);
+          localStorage.setItem("isStaff",json.is_staff);
           this.setState({ username: json.username, logged_in: true }, 
             () => { console.log(this.state.username) });
         });
     }
+    else{
+      this.setState({ logged_in: false })
+    }
+  },600)
   }
 
   handle_login = async(data) => {
+    // e.preventDefault();
     fetch('http://localhost:8000/token-auth/', {
           method: 'POST',
           headers: {
@@ -31,8 +39,15 @@ class LoginForm extends React.Component {
               },
           body: JSON.stringify(data)
           }).then(res => res.json())
-            .then(json => localStorage.setItem("token",json.token))
-              this.setState({ logged_in: true })
+            .then(json =>{ 
+              if(json.token){
+                localStorage.setItem("token",json.token) 
+              }
+              else{
+                alert(json.non_field_errors)
+              }
+            })      
+            this.setState({ logged_in: true })
     };
 
   handle_change = e => {
@@ -47,11 +62,13 @@ class LoginForm extends React.Component {
 
 
   render() {
+    
     return (
       <>
-        {this.state.logged_in ?
-          <Redirect to="/files" />
-          :
+      {this.state.logged_in ? 
+      <Redirect to="/files" /> 
+      :
+
           <form className="login-box" onSubmit={() => this.handle_login(this.state)}>
             <h1>login</h1>
             <input
@@ -73,12 +90,11 @@ class LoginForm extends React.Component {
 
             <input type="submit" value="submit" className="submit-btn" />
           </form>
-
-        }
+    }
 
       </>
     );
-
+    
   }
 }
 
